@@ -1,0 +1,57 @@
+name: Process lotto analysis
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@v2
+
+      - name: Check out data repo
+        uses: actions/checkout@v2
+        with:
+          repository: fasmat/lotto-data
+          path: "data"
+          token: ${{ secrets.data_token }}
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: "4.1.1"
+
+      - name: Install packages
+        uses: r-lib/actions/install-r-packages@v1
+        with:
+          cache-version: 2
+          extra-packages: |
+            minpack.lm
+
+      - name: Run analysis
+        run: |
+          source("analysis/helpers.r")
+          # only analyze last three years
+          data <- read.data("data/data/numbers.csv", "data/data/winnings.csv")
+          data <- data[data$Date > as.POSIXct(Sys.Date() - 3 * 365), ]
+
+          outdir <- "plots"
+
+          source("analysis/analysis-general.r")
+          source("analysis/analysis-special.r")
+        shell: Rscript {0}
+
+      - name: Commit updated data
+        run: |-
+          if [[ `git status --porcelain` ]]; then
+            echo "New data fetched"
+            git config user.name "Auto Updater"
+            git config user.email "actions@users.noreply.github.com"
+            git add -A
+            timestamp=$(date -u)
+            git commit -m "Auto-update data: ${timestamp}" || exit 0
+            git push
+          fi
