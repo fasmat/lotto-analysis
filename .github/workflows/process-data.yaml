@@ -45,6 +45,7 @@ jobs:
 
       - name: Commit updated data
         run: |-
+          rm -r data
           if [[ `git status --porcelain` ]]; then
             echo "New data analyzed"
             git config user.name "Auto Updater"

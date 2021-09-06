@@ -3,7 +3,7 @@
 [![Process lotto analysis](https://github.com/fasmat/lotto-analysis/actions/workflows/process-data.yaml/badge.svg)](https://github.com/fasmat/lotto-analysis/actions/workflows/process-data.yaml)
 
 This repository analyzes the pick frequency of lottery numbers in the German lottery. Some numbers are played more often by lottery players than others.
-If rare numbers are picked, the lottery will pay out more money in the case of a winning ticket. This strategy does not increase the likelyhood of winning,
+If rare numbers are picked, the lottery will pay out more money in the case of a winning ticket. This strategy does not increase the likelihood of winning,
 but it maximizes possible payouts.
 
 ## Results
@@ -11,7 +11,7 @@ but it maximizes possible payouts.
 ![Results](plots/win3-general.png "Pick rates of numbers")
 
 This graph shows the relative pick rate of German lottery numbers. A 1.0 means the number is picked as often as one would expect it to be. Higher numbers
-indicate that the number is picked more often than it would if numbers were picked randomly; e.g. a 1.3 means that the respecitve number is picked 30% more
+indicate that the number is picked more often than it would if numbers were picked randomly; e.g. a 1.3 means that the respective number is picked 30% more
 often than it would be if it was picked randomly.
 
 The same data is visualized here in a heat map:
