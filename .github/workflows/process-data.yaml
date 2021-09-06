@@ -25,11 +25,10 @@ jobs:
           r-version: "4.1.1"
 
       - name: Install packages
-        uses: r-lib/actions/install-r-packages@v1
-        with:
-          cache-version: 2
-          extra-packages: |
-            minpack.lm
+        run: |
+          install.packages("minpack.lm")
+          install.packages("lattice")
+        shell: Rscript {0}
 
       - name: Run analysis
         run: |

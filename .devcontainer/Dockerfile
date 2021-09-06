@@ -4,6 +4,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         git \
         ssh \
+        libssl-dev \
         libcurl4-openssl-dev \
         libxml2-dev
 
