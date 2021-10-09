@@ -35,56 +35,103 @@ get.Prob <- function() {
 #'
 #' @return a data.frame with the first row containing the probabilites of
 #' winning and the second row containing the expected winnings
-get.ExpWin <- function() {
+get.ExpWin <- function(date) {
     prob <- get.Prob()
 
-    # these are the fractions of income that is distributed to the win classes
-    payout.rate <- c(
-        0.128,
-        0.074,
-        0.037,
-        0.111,
-        0.037,
-        0.074,
-        0.074,
-        0.332,
-        0.132
-    )
+    if (date > as.POSIXct("2020-09-20")) {
+        # payout rate is the probability of winning in the lowest win class
+        # times the payout ratio (6 € for 0.6 € contributed to the pool)
+        lowest <- prob[1, 9] * 10
 
-    # for every 1 € played 50 cents are payed out
-    expect <- 0.5 * payout.rate / prob
+        # payout rate is fixed for the highest win class
+        highest <- 0.15
 
-    # the draw2s class has a fixed payout rate
-    expect[1, 9] <- 5
-    return(rbind(prob, expect))
+        # for other win classes it is relative to highest and lowest
+        remaining <- (1 - highest - lowest)
+        payout_rate <- c(
+            highest,
+            remaining * 0.15,
+            remaining * 0.052,
+            remaining * 0.155,
+            remaining * 0.043,
+            remaining * 0.102,
+            remaining * 0.087,
+            remaining * 0.411,
+            lowest
+        )
+
+        # for every 1.2 € played 60 cents are payed out
+        expect <- 0.6 * payout_rate / prob
+
+        # the draw2s class has a fixed payout rate
+        expect[1, 9] <- 6
+        return(rbind(prob, expect))
+    }
+
+    if (date > as.POSIXct("2013-05-03")) {
+        # payout rate is the probability of winning in the lowest win class
+        # times the payout ratio (5 € for 0.5 € contributed to the pool)
+        lowest <- prob[1, 9] * 10
+
+        # payout rate is fixed for the highest win class
+        highest <- 0.128
+
+        # for other win classes it is relative to highest and lowest
+        remaining <- (1 - highest - lowest)
+        payout_rate <- c(
+            highest,
+            remaining * 0.10,
+            remaining * 0.05,
+            remaining * 0.15,
+            remaining * 0.05,
+            remaining * 0.10,
+            remaining * 0.10,
+            remaining * 0.45,
+            lowest
+        )
+
+        # for every 1 € played 50 cents are payed out
+        expect <- 0.5 * payout_rate / prob
+
+        # the draw2s class has a fixed payout rate
+        expect[1, 9] <- 5
+        return(rbind(prob, expect))
+    }
+
+    stop("Date not supported")
 }
 
 #' calculates the ratios between the expected winnings and the actual payed
 #' out amounts
 #'
 #' @return ratios of realized and expected winnings
-get.WinRatios <- function(data, exp.win = get.ExpWin()[2, ]) {
-    ratio.win2S <- data$Win2S / exp.win$Win2s
+get.WinRatios <- function(data) {
+    m <- apply(data, 1, function(row) {
+        exp.win <- get.ExpWin(row["Date"])[2, ]
+        ratio.win2S <- as.numeric(row["Win2S"]) / exp.win$Win2s
 
-    ratio.win3 <- exp.win$Win3 / data$Win3
-    ratio.win3S <- exp.win$Win3s / data$Win3S
-    ratio.win3zz <- ratio.win3S / ratio.win3
+        ratio.win3 <- exp.win$Win3 / as.numeric(row["Win3"])
+        ratio.win3S <- exp.win$Win3s / as.numeric(row["Win3S"])
+        ratio.win3zz <- ratio.win3S / ratio.win3
 
-    ratio.win4 <- exp.win$Win4 / data$Win4
-    ratio.win4S <- exp.win$Win4s / data$Win4S
-    ratio.win4zz <- ratio.win4S / ratio.win4
+        ratio.win4 <- exp.win$Win4 / as.numeric(row["Win4"])
+        ratio.win4S <- exp.win$Win4s / as.numeric(row["Win4S"])
+        ratio.win4zz <- ratio.win4S / ratio.win4
 
-    return(data.frame(
-        Date = data$Date,
-        data$ZZ,
-        ratio.win2S,
-        ratio.win3,
-        ratio.win3S,
-        ratio.win3zz,
-        ratio.win4,
-        ratio.win4S,
-        ratio.win4zz
-    ))
+        return(data.frame(
+            Date = row["Date"],
+            data.ZZ = row["ZZ"],
+            ratio.win2S,
+            ratio.win3,
+            ratio.win3S,
+            ratio.win3zz,
+            ratio.win4,
+            ratio.win4S,
+            ratio.win4zz
+        ))
+    })
+    m <- Reduce(function(...) merge(..., all = T), m)
+    return(m)
 }
 
 #' given a vector representing a row of the data.frame returned by
