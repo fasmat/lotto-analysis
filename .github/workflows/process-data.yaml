@@ -39,8 +39,8 @@ jobs:
 
           outdir <- "plots"
 
-          source("analysis/analysis-general.r")
           source("analysis/analysis-special.r")
+          source("analysis/analysis-general.r")
         shell: Rscript {0}
 
       - name: Commit updated data
