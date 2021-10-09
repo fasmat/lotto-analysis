@@ -8,7 +8,7 @@ but it maximizes possible payouts.
 
 ## Results
 
-![Results](plots/win3-general.png "Pick rates of numbers")
+![Results pick rates](plots/win3-general.png "Pick rates of numbers")
 
 This graph shows the relative pick rate of German lottery numbers. A 1.0 means the number is picked as often as one would expect it to be. Higher numbers
 indicate that the number is picked more often than it would if numbers were picked randomly; e.g. a 1.3 means that the respective number is picked 30% more
@@ -24,9 +24,21 @@ numbers at the edge (with exceptions like the number 7).
 
 For the super numbers see the following graph:
 
-![Results](plots/win3-special.png "Pick rates of special numbers")
+![Results pick rates special numbers](plots/win3-special.png "Pick rates of special numbers")
 
 Special numbers are picked as one would expect: 7 is by far the most commonly picked number and 0 the least.
+
+## Playing for profit
+
+If you pick numbers at random your expected return is € 0.50 for every € 1.00 you play. But if you pick the least played numbers:
+
+![Current best numbers to play](plots/win3-numbers.png "Current best numbers to play")
+
+then instead you are expected to win:
+
+![Expected return](plots/win3-expected-return.png "Expected return with least played numbers")
+
+Still not a profitable strategy; but at least you are losing less.
 
 ## Updates
 

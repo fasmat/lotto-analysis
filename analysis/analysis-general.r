@@ -53,6 +53,31 @@ text(x + 0.5, avg, labels = round(avg, 2), cex = 0.7)
 arrows(x, avg - sdev, x, avg + sdev, length = 0.05, angle = 90, code = 3)
 dev.off()
 
+# index least played numbers
+best <- match(head(sort(avg), 6), avg)
+best <- sort(best)
+
+best.zz <- match(head(sort(avg.3zz),1), avg.3zz)
+
+file <- file.path(outdir, "win3-numbers.png")
+png(file, bg = "black", width = 600, height = 100)
+par(mar=c(1,1,1,1))
+plot.new()
+plot.window(0:1, 0:1)
+text(.5,.5, paste(c(best, " ", best.zz - 1), collapse=" "), cex=5, col=rgb(.9,.9,.9,.7))
+dev.off()
+
+# calculate expected return for best numbers
+ret <- round(0.5 / mean(avg[best], avg.3zz[best.zz]), 2)
+
+file <- file.path(outdir, "win3-expected-return.png")
+png(file, bg = "black", width = 300, height = 100)
+par(mar=c(1,1,1,1))
+plot.new()
+plot.window(0:1, 0:1)
+text(.5,.5, paste(c("€", ret), collapse=" "), cex=5, col=rgb(.9,.9,.9,.7))
+dev.off()
+
 ###########################################################
 
 heatmap <- data.frame(expand.grid(x = seq(1, 7), y = seq(7, 1)),
@@ -122,6 +147,31 @@ plot(x, avg,
 axis(1, at = x, labels = x)
 text(x + 0.5, avg, labels = round(avg, 2), cex = 0.7)
 arrows(x, avg - sdev, x, avg + sdev, length = 0.05, angle = 90, code = 3)
+dev.off()
+
+# index least played numbers
+best <- match(head(sort(avg), 6), avg)
+best <- sort(best)
+
+best.zz <- match(head(sort(avg.4zz),1), avg.4zz)
+
+file <- file.path(outdir, "win4-numbers.png")
+png(file, bg = "black", width = 600, height = 100)
+par(mar=c(1,1,1,1))
+plot.new()
+plot.window(0:1, 0:1)
+text(.5,.5, paste(c(best, " ", best.zz - 1), collapse=" "), cex=5, col=rgb(.9,.9,.9,.7))
+dev.off()
+
+# calculate expected return for best numbers
+ret <- round(0.5 / mean(avg[best], avg.4zz[best.zz]), 2)
+
+file <- file.path(outdir, "win4-expected-return.png")
+png(file, bg = "black", width = 300, height = 100)
+par(mar=c(1,1,1,1))
+plot.new()
+plot.window(0:1, 0:1)
+text(.5,.5, paste(c("€", ret), collapse=" "), cex=5, col=rgb(.9,.9,.9,.7))
 dev.off()
 
 ###########################################################

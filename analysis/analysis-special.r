@@ -14,6 +14,8 @@ for (i in 0:9) {
     sdev <- c(sdev, sd(data.analysis$ratio.win3zz[data.analysis$data.ZZ == i], na.rm = T))
 }
 
+avg.3zz <- avg
+
 file <- file.path(outdir, "win3-special.png")
 png(file, bg = "white", width = 600, height = 400)
 plot(x, avg,
@@ -42,6 +44,8 @@ for (i in 0:9) {
     avg <- c(avg, mean(data.analysis$ratio.win4zz[data.analysis$data.ZZ == i], na.rm = T))
     sdev <- c(sdev, sd(data.analysis$ratio.win4zz[data.analysis$data.ZZ == i], na.rm = T))
 }
+
+avg.4zz <- avg
 
 file <- file.path(outdir, "win4-special.png")
 png(file, bg = "white", width = 600, height = 400)
