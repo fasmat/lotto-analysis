@@ -40,16 +40,18 @@ jobs:
           source("analysis/analysis-special.r")
           source("analysis/analysis-general.r")
 
-      - name: Get timestamp
-        id: timestamp
-        run: echo "timestamp=$(date -u)" >> $GITHUB_OUTPUT
+      - name: Remove data again
+        id: cleanup
+        run: |
+          rm -rf data/*
+          echo "timestamp=$(date -u)" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT }}
-          commit-message: "Auto-update data: ${{ steps.timestamp.outputs.timestamp }}"
+          commit-message: "Auto-update data: ${{ steps.cleanup.outputs.timestamp }}"
           title: "Update Analysis Plots"
           branch: update-analysis
           body: |
