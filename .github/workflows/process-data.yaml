@@ -17,6 +17,11 @@ jobs:
           repository: fasmat/lotto-data
           path: "data"
           token: ${{ secrets.DATA_TOKEN }}
+      - name: Strip git metadata from submodule
+        id: metadata
+        run: |
+          rm -rf data/.git
+          echo "timestamp=$(date -u)" >> $GITHUB_OUTPUT
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
@@ -40,18 +45,12 @@ jobs:
           source("analysis/analysis-special.r")
           source("analysis/analysis-general.r")
 
-      - name: Remove data again
-        id: cleanup
-        run: |
-          rm -rf data/*
-          echo "timestamp=$(date -u)" >> $GITHUB_OUTPUT
-
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT }}
-          commit-message: "Auto-update data: ${{ steps.cleanup.outputs.timestamp }}"
+          commit-message: "Auto-update data: ${{ steps.metadata.outputs.timestamp }}"
           title: "Update Analysis Plots"
           branch: update-analysis
           body: |
