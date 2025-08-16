@@ -12,31 +12,29 @@ jobs:
     steps:
       - name: Check out this repo
         uses: actions/checkout@v5
-
       - name: Check out data repo
         uses: actions/checkout@v5
         with:
           repository: fasmat/lotto-data
           path: "data"
-          token: ${{ secrets.data_token }}
-
+          token: ${{ secrets.DATA_TOKEN }}
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: "4.1.1"
-
+          r-version: "4.5.1"
       - name: Install packages
+        shell: Rscript {0}
         run: |
           install.packages("minpack.lm")
           install.packages("lattice")
-        shell: Rscript {0}
-
+        
       - name: Run analysis
+        shell: Rscript {0}
         run: |
           source("analysis/helpers.r")
           # only analyze last three years
           data <- read.data("data/data/numbers.csv", "data/data/winnings.csv")
-          data <- data[data$Date > as.POSIXct(Sys.Date() - 3 * 365), ]
+          data <- data[as.POSIXct(data$Date) > as.POSIXct(Sys.Date() - 3 * 365), ]
 
           outdir <- "plots"
 
