@@ -7,8 +7,7 @@ on:
 
 jobs:
   scheduled:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out this repo
         uses: actions/checkout@v5
@@ -40,17 +39,24 @@ jobs:
 
           source("analysis/analysis-special.r")
           source("analysis/analysis-general.r")
-        shell: Rscript {0}
 
-      - name: Commit updated data
-        run: |-
-          rm -r data
-          if [[ `git status --porcelain` ]]; then
-            echo "New data analyzed"
-            git config user.name "Auto Updater"
-            git config user.email "actions@users.noreply.github.com"
-            git add -A
-            timestamp=$(date -u)
-            git commit -m "Auto-update data: ${timestamp}" || exit 0
-            git push
-          fi
+      - name: Get timestamp
+        id: timestamp
+        run: echo "timestamp=$(date -u)" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: "Auto-update data: ${{ steps.timestamp.outputs.timestamp }}"
+          title: "Update Analysis Plots"
+          branch: update-analysis
+          body: |
+            Automated update of plots from new data.
+
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --auto --squash
