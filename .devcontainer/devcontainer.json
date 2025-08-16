@@ -3,35 +3,51 @@
 {
     "name": "Go",
     "build": {
-        "dockerfile": "Dockerfile",
+        "dockerfile": "Dockerfile"
     },
     "runArgs": [
+        "--init",
         "--cap-add=SYS_PTRACE",
         "--security-opt",
         "seccomp=unconfined"
     ],
     "mounts": [
-        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,destination=/root/.ssh,type=bind,readonly"
-    ],
-    // Set *default* container specific settings.json values on container create.
-    "settings": {
-        "editor.formatOnSave": true,
+		"type=bind,source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,destination=/home/root/.ssh",
+		"type=bind,source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitignore_global,destination=/home/root/.gitignore_global"
+	],
+    // Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.rulers": [
+					120
+				],
+				"files.autoSave": "afterDelay",
+				"gitlens.terminal.overrideGitEditor": false
+            },
+
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "streetsidesoftware.code-spell-checker",
+                "ms-azuretools.vscode-docker",
+				"github.copilot",
+                "eamodio.gitlens",
+                "davidanson.vscode-markdownlint",
+                "Ikuyadeu.r",
+                "RDebugger.r-debugger",
+                "vscode-icons-team.vscode-icons",
+                "redhat.vscode-yaml"
+            ]
+        }
     },
-    // Add the IDs of extensions you want installed when the container is created.
-    "extensions": [
-        "streetsidesoftware.code-spell-checker",
-        "github.copilot",
-        "eamodio.gitlens",
-        "davidanson.vscode-markdownlint",
-        "Ikuyadeu.r",
-        "RDebugger.r-debugger",
-        "vscode-icons-team.vscode-icons",
-        "redhat.vscode-yaml"
-    ],
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
     // Use 'postCreateCommand' to run commands after the container is created.
     // "postCreateCommand": "",
-    // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-    // "remoteUser": "vscode"
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root"
 }
