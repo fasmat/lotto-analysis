@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check out this repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Check out data repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: fasmat/lotto-data
           path: "data"
