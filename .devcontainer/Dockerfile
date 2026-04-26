@@ -1,9 +1,11 @@
-FROM r-base:4.5.1
+FROM mcr.microsoft.com/devcontainers/base:noble
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
-        git \
-        ssh
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y install --no-install-recommends \
+        build-essential \
+        r-base-dev \
+        r-recommended 
 
-RUN R -e "install.packages('languageserver')" \
-    && R -e "install.packages('minpack.lm')"
+RUN R -e "install.packages('languageserver')" && \
+    R -e "install.packages('minpack.lm')" && \
+    rm -rf /var/lib/apt/lists/*
